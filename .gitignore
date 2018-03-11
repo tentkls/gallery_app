@@ -1,0 +1,12 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+/build
+*.trace
+/captures
+/true/
+gitflow-installer.sh
+/gitflow
+*.li
+/calendar.properties
