@@ -3,38 +3,15 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId getApplicationId()
+        applicationId "com.gallery.gallery1"
         minSdkVersion 15
         targetSdkVersion 26
-
-        versionCode Integer.parseInt(System.getenv("BUILD_NUMBER") ?: "1")
-        ext.buildNumber = System.getenv("BUILD_NUMBER") ?: "dev"
-        ext.sprintNumber = 17
-        versionName "0.1.$buildNumber"
-
+        versionCode 1
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-
-    signingConfigs {
-        if (rootProject.file("release.properties").exists()) {
-            def properties = new Properties()
-            def fileToLoad = rootProject.file("release.properties").exists() ?
-                    new FileInputStream(rootProject.file("release.properties")) : new FileInputStream("/home/username/release.properties")
-            properties.load(fileToLoad)
-            release {
-                storeFile rootProject.file(properties.STORE_FILE)
-                storePassword properties.STORE_PASSWORD
-                keyAlias properties.KEY_ALIAS
-                keyPassword properties.KEY_PASSWORD
-            }
-        }
-    }
-
     buildTypes {
         release {
-            if (signingConfigs.hasProperty("release")) {
-                signingConfig signingConfigs.release
-            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -47,18 +24,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-}
-
-def getApplicationId() {
-
-    return "com.gallery.lib"
-}
-
-def getSubmodules = { ->
-    def hashStdOut = new ByteArrayOutputStream()
-    exec {
-        commandLine "git", "config", "--file", ".gitmodules", "--name-only", "--get-regexp", "path"
-        standardOutput = hashStdOut
-    }
-    return hashStdOut.toString().trim().split("\n")
 }
