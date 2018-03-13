@@ -1,0 +1,21 @@
+en
+Expensive placebo helps
+
+de
+Teures Placebo hilft besser
+
+it
+Caro placebo aiuta meglio
+
+es
+Caro placebo ayuda mejor
+
+pt
+Caro placebo ajuda melhor
+
+ru
+Дорогое плацебо помогает лучше
+
+fr
+Cher placebo permet de mieux
+

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "com.gallery.gallery1"
+        applicationId loadProperties()["package_name"]
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
@@ -24,4 +24,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
+
+def loadProperties() {
+    Properties properties = new Properties()
+    String calendarPropertyFileName = "../calendar.properties"
+    if (file(calendarPropertyFileName).exists()) {
+        properties.load(new FileInputStream(file(calendarPropertyFileName)))
+    }
+    return properties
 }

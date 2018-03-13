@@ -1,0 +1,21 @@
+en
+The hit list drugs
+
+de
+Hitliste der Medikamente
+
+it
+Lista dei risultati di farmaci
+
+es
+Lista negra de medicamentos
+
+pt
+Lista negra de medicamentos
+
+ru
+Расстрельный список препаратов
+
+fr
+Liste noire des médicaments
+
