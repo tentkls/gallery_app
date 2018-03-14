@@ -13,16 +13,25 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gallery.gallery1.R;
 import com.gallery.gallerylib.model.Ad;
 import com.gallery.gallerylib.model.Item;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import butterknife.ButterKnife;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AdActivity {
     protected RecyclerView listView;
@@ -159,13 +168,20 @@ public class MainActivity extends AdActivity {
     }
 
     private void loadAd() {
-        App.getApi().getAd().subscribeOn(Schedulers.newThread()).observeOn(Schedulers.newThread()).subscribe(new rx.Observer<AdObj>() {
-            @Override
-            public void onCompleted() {
-            }
+        App.getApi().getAd().subscribeOn(Schedulers.newThread()).observeOn(Schedulers.newThread()).subscribe(new Observer<AdObj>() {
 
             @Override
             public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+
+            @Override
+            public void onSubscribe(Disposable d) {
+
             }
 
             @Override
@@ -182,25 +198,39 @@ public class MainActivity extends AdActivity {
     }
 
     private void loadItem() {
-        App.getApi().getItem().subscribeOn(Schedulers.newThread()).observeOn(Schedulers.newThread()).subscribe(new rx.Observer<ItemObj>() {
-            @Override
-            public void onCompleted() {
-            }
+        StringBuilder builder = new StringBuilder();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(
+                    new InputStreamReader(getAssets().open("filename.txt")));
 
-            @Override
-            public void onError(Throwable e) {
+            // do reading, usually loop until end of file reading
+            String mLine;
+            while ((mLine = reader.readLine()) != null) {
+                builder.append(mLine);
             }
-
-            @Override
-            public void onNext(ItemObj items) {
-                itemList = items.getList();
-                MainActivity.this.listView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        refresh();
-                    }
-                });
+        } catch (IOException e) {
+            //log the exception
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    //log the exception
+                }
             }
-        });
+        }
+        try {
+            ItemObj obj = new ItemObj(new JSONObject(builder.toString()));
+            itemList = obj.getList();
+            MainActivity.this.listView.post(new Runnable() {
+                @Override
+                public void run() {
+                    refresh();
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

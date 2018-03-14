@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.gallery.gallery1.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
