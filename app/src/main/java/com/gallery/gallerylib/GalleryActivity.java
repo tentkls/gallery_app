@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.gallery.gallery1.R;
+import com.gallery.gallery.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class GalleryActivity extends AdActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         list = getIntent().getStringArrayListExtra(URLS_TAG);
-        listView = ButterKnife.findById(this, R.id.list);
+        listView = findViewById(R.id.list);
         listView.setLayoutManager(new GridLayoutManager(this, 2));
         listView.setAdapter(adapter);
     }

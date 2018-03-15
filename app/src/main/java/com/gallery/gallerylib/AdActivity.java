@@ -3,6 +3,7 @@ package com.gallery.gallerylib;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.gallery.gallery.R;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 

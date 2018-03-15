@@ -1,1 +1,4 @@
-<resources><string name="app_name">Расстрельный список препаратов</string></resources>
+<resources>
+    <string name="app_name">Расстрельный список препаратов</string>
+    <string name="ad_page"></string>
+</resources>

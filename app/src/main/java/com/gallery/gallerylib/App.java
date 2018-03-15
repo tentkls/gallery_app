@@ -4,6 +4,7 @@ package com.gallery.gallerylib;
 import android.app.Application;
 import android.content.Context;
 
+import com.gallery.gallery.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

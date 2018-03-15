@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gallery.gallery1.R;
+import com.gallery.gallery.R;
 import com.gallery.gallerylib.model.Ad;
 import com.gallery.gallerylib.model.Item;
 import com.squareup.picasso.Picasso;
@@ -29,9 +29,8 @@ import java.util.List;
 import java.util.Random;
 
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
+import rx.Observer;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AdActivity {
     protected RecyclerView listView;
@@ -171,18 +170,14 @@ public class MainActivity extends AdActivity {
         App.getApi().getAd().subscribeOn(Schedulers.newThread()).observeOn(Schedulers.newThread()).subscribe(new Observer<AdObj>() {
 
             @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
             public void onError(Throwable e) {
             }
 
-            @Override
-            public void onComplete() {
-
-            }
-
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
 
             @Override
             public void onNext(AdObj ads) {
@@ -202,7 +197,7 @@ public class MainActivity extends AdActivity {
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(
-                    new InputStreamReader(getAssets().open("filename.txt")));
+                    new InputStreamReader(getAssets().open("content.json")));
 
             // do reading, usually loop until end of file reading
             String mLine;
