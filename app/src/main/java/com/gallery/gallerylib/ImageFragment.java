@@ -48,7 +48,7 @@ public class ImageFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ImageView iv = ButterKnife.findById(view, R.id.image);
         final String url = getArguments().getString(URL);
-        Picasso.with(getContext()).load(url).into(iv);
+        Picasso.with(getContext()).load("file:///android_asset/" + url).into(iv);
         view.findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

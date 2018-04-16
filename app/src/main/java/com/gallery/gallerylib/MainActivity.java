@@ -53,7 +53,11 @@ public class MainActivity extends AdActivity {
         listView.setLayoutManager(new GridLayoutManager(this, 2));
         listView.setAdapter(adapter);
         loadAd();
-        loadItem();
+        try {
+            loadItem();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         refresh();
     }
 
@@ -140,7 +144,7 @@ public class MainActivity extends AdActivity {
 
         public void fill(Item item) {
             title.setText(item.getTitle());
-            Picasso.with(MainActivity.this).load(item.getUrl()).into(image);
+            Picasso.with(MainActivity.this).load("file:///android_asset/" + item.getUrl()).into(image);
             adView.setVisibility(View.GONE);
             this.item = item;
             this.ad = null;
@@ -192,40 +196,22 @@ public class MainActivity extends AdActivity {
         });
     }
 
-    private void loadItem() {
+    private void loadItem() throws IOException {
         StringBuilder builder = new StringBuilder();
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(
-                    new InputStreamReader(getAssets().open("content.json")));
-
-            // do reading, usually loop until end of file reading
-            String mLine;
-            while ((mLine = reader.readLine()) != null) {
-                builder.append(mLine);
+        itemList = new ArrayList<>();
+        String root = "content";
+        String[] folders = getAssets().list(root);
+        for (String folder : folders) {
+            Item item = new Item();
+            item.setTitle(folder);
+            String[] images = getAssets().list(String.format("%s/%s", root, folder));
+            item.setUrl(String.format("%s/%s/%s", root, folder, images[0]));
+            item.setUrls(new ArrayList<String>());
+            for (String image : images) {
+                item.getUrls().add(String.format("%s/%s/%s", root, folder, image));
             }
-        } catch (IOException e) {
-            //log the exception
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    //log the exception
-                }
-            }
+            itemList.add(item);
         }
-        try {
-            ItemObj obj = new ItemObj(new JSONObject(builder.toString()));
-            itemList = obj.getList();
-            MainActivity.this.listView.post(new Runnable() {
-                @Override
-                public void run() {
-                    refresh();
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        refresh();
     }
 }

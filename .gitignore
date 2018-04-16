@@ -10,3 +10,4 @@ gitflow-installer.sh
 /gitflow
 *.li
 /calendar.properties
+assets

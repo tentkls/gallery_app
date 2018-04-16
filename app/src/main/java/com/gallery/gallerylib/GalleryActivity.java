@@ -73,7 +73,7 @@ public class GalleryActivity extends AdActivity {
         }
 
         void fill(String string, int position) {
-            Picasso.with(GalleryActivity.this).load(string).into(image);
+            Picasso.with(GalleryActivity.this).load("file:///android_asset/" + string).into(image);
             this.position = position;
         }
 

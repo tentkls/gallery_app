@@ -1,19 +1,56 @@
+import java.text.SimpleDateFormat
+
 apply plugin: 'com.android.application'
+
+def dropBoxPath = "C:\\Users\\PrimankaDEN\\Dropbox\\"
+def artifactPath = "Apps India\\"
+def contentPath = "Apps Content\\"
+
+def projectPath = "D:\\Apps\\app\\"
+def assetsPath = "app\\src\\main\\assets\\content\\"
+def stringsPath = "app\\src\\main\\res\\values\\string_title.xml"
+
+def content = "Hairstyles"
 
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId loadProperties()["package_name"]
+        applicationId "com.imagesgalley.gallery" + new SimpleDateFormat("yyyy_MM_dd_hh_mm").format(new Date()) + "." + content
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 27
+        versionName "0.1.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        project.ext.set("archivesBaseName", defaultConfig.applicationId)
     }
+
+    signingConfigs {
+        release {
+            keyAlias 'india1'
+            keyPassword 'india1'
+            storeFile file('india.jks')
+            storePassword 'india1'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.assemble.doLast { assemble ->
+            //copy the apk in another directory, add here your
+            //logic to customize the destination folder
+            copy {
+                from variant.outputs*.outputFile
+                into dropBoxPath + artifactPath + content + " " + new SimpleDateFormat("yyyy_MM_dd_hh_mm").format(new Date()) + "\\"
+            }
+            //if you don't want to delete the file after copying it comment the line below
+            //delete variant.outputs*.outputFile
         }
     }
 }
@@ -38,15 +75,36 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.google.firebase:firebase-ads:11.8.0'
+    compile 'com.google.android.gms:play-services-ads:15.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
 
-def loadProperties() {
-    Properties properties = new Properties()
-    String calendarPropertyFileName = "../calendar.properties"
-    if (file(calendarPropertyFileName).exists()) {
-        properties.load(new FileInputStream(file(calendarPropertyFileName)))
+task prepareContent {
+    File srcFolder = new File(dropBoxPath + contentPath + content)
+    File destFolder = new File(projectPath + assetsPath)
+    destFolder.mkdir()
+
+    deleteFolder(destFolder)
+
+    def r = new Random()
+    File[] categories = srcFolder.listFiles()
+    for (int j = 0; j < 5; j++) {
+        def categoryIndex = r.nextInt(categories.size())
+        def category = categories[categoryIndex]
+        String categoryTitle = category.name
+        File[] images = category.listFiles()
+        for (int i = 0; i < 10; i++) {
+            def fileIndex = r.nextInt(images.size())
+            File imageSrc = images[fileIndex]
+            File imageDest = new File(assetsPath + "\\" + categoryTitle + "\\" + imageSrc.name)
+            imageDest.getParentFile().mkdirs()
+            imageDest.createNewFile()
+            copyFileUsingStream(imageSrc, imageDest)
+        }
     }
-    return properties
+
+    def stringResources = String.format("<resources><string name=\"app_name\">%s</string></resources>", content)
+    new File(projectPath + stringsPath).withWriter { writer ->
+        writer.write(stringResources)
+    }
 }
